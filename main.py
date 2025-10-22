@@ -37,13 +37,10 @@ def main(page: ft.Page):
     # ListView per mostrare la lista di auto aggiornata
     lista_auto = ft.ListView(expand=True, spacing=5, padding=10, auto_scroll=True)
 
-    # Tutti i TextField per le info necessarie per aggiungere una nuova automobile (marca, modello, anno, contatore posti)
-    # TODO
-
     input_marca = ft.TextField(value="", label="Marca")
     input_modello = ft.TextField(value="", label="Modello")
     input_anno = ft.TextField(value="", label="Anno")
-    input_posti = ft.TextField(value="", label="Posti")
+    input_posti = ft.IconButton()
 
     # --- FUNZIONI APP ---
     def aggiorna_lista_auto():
@@ -65,7 +62,6 @@ def main(page: ft.Page):
         page.update()
 
     # Handlers per la gestione dei bottoni utili all'inserimento di una nuova auto
-    # TODO
     def handleAdd(e):
         currentVal = txtOut.value
         txtOut.value = currentVal + 1
@@ -80,9 +76,14 @@ def main(page: ft.Page):
         automobile.marca = input_marca.value
         automobile.modello = input_modello.value
         automobile.anno = input_anno.value
-        automobile.posti = input_posti.value
-        autonoleggio.aggiungi_automobile(input_marca.value, input_modello.value, input_anno.value, input_posti.value)
-        lista_auto.controls.append(ft.Text(f"Nuova automobile aggiunta{input_marca.value} {input_modello.value} {input_anno.value} {input_posti.value}"))
+        automobile.posti = txtOut.value
+        auto=autonoleggio.aggiungi_automobile(input_marca.value, input_modello.value, input_anno.value, txtOut.value)
+        codice=auto.codice
+        if auto.disponibile == True:
+            libera="Disponibile"
+        else:
+            libera="Noleggiata"
+        lista_auto.controls.append(ft.Text(f"✅{codice} | {input_marca.value} {input_modello.value} ({input_anno.value}) | {txtOut.value} posti | {libera}"))
         page.update()
 
     # --- EVENTI ---
@@ -100,9 +101,7 @@ def main(page: ft.Page):
     txtOut = ft.TextField(width=100, disabled=True,
                           value=0, border_color="green",
                           text_align=ft.TextAlign.CENTER)
-    row1 = ft.Row([btnMinus, txtOut, btnAdd],
-                  alignment=ft.MainAxisAlignment.CENTER)
-    page.add(row1)
+
 
     pulsante_conferma_automobile = ft.ElevatedButton("Conferma", on_click=conferma_automobili)
 
@@ -126,11 +125,13 @@ def main(page: ft.Page):
         # TODO
         ft.Text("Aggiungi nuova automobile", size=20),
         ft.Row(spacing=20,
-               controls=[input_marca, input_modello, input_anno, input_posti],
+               controls=[input_marca, input_modello, input_anno, btnMinus, txtOut, btnAdd],
                alignment=ft.MainAxisAlignment.CENTER),
         ft.Row(spacing=0,
                controls=[pulsante_conferma_automobile],
                alignment=ft.MainAxisAlignment.CENTER),
+
+
 
         # Sezione 4
         ft.Divider(),
