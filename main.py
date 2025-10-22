@@ -77,13 +77,23 @@ def main(page: ft.Page):
         automobile.modello = input_modello.value
         automobile.anno = input_anno.value
         automobile.posti = txtOut.value
-        auto=autonoleggio.aggiungi_automobile(input_marca.value, input_modello.value, input_anno.value, txtOut.value)
-        codice=auto.codice
-        if auto.disponibile == True:
-            libera="Disponibile"
+        if input_marca.value != "" and input_modello.value != "":
+            if int(input_anno.value) >1885 and int(input_anno.value) < 2025:
+                if int(txtOut.value) >0:
+                    auto=autonoleggio.aggiungi_automobile(input_marca.value, input_modello.value, input_anno.value, txtOut.value)
+                    codice=auto.codice
+                    if auto.disponibile == True:
+                        libera="Disponibile"
+                    else:
+                        libera="Noleggiata"
+                    lista_auto.controls.append(ft.Text(f"✅{codice} | {input_marca.value} {input_modello.value} ({input_anno.value}) | {txtOut.value} posti | {libera}"))
+                else:
+                    lista_auto.controls.append(ft.Text("⛔ Inserire un numero di posti maggiore di 0, non esistono auto con meno di 1 posto posti."))
+            else:
+                lista_auto.controls.append(
+                    ft.Text("⛔ Inserire un anno compreso tra il 1886 e l'anno corrente perchè è in questo periodo che esistono le auto."))
         else:
-            libera="Noleggiata"
-        lista_auto.controls.append(ft.Text(f"✅{codice} | {input_marca.value} {input_modello.value} ({input_anno.value}) | {txtOut.value} posti | {libera}"))
+            lista_auto.controls.append(ft.Text("⛔ Inserire una marca e un modello, non è possibile inserire un'automobile senza questi dati"))
         page.update()
 
     # --- EVENTI ---
