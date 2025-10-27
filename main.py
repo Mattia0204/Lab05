@@ -75,8 +75,9 @@ def main(page: ft.Page):
     def handleRemove(e):
         # Decrementa il valore del campo txtOut (numero di posti visualizzato)
         currentVal = txtOut.value
-        txtOut.value = currentVal - 1
-        txtOut.update()
+        if (currentVal > 0):
+            txtOut.value = currentVal - 1
+            txtOut.update()
 
     def conferma_automobili(e):
         # Raccoglie i dati dai campi, valida i valori e aggiunge una nuova automobile
@@ -89,20 +90,15 @@ def main(page: ft.Page):
         if input_marca.value != "" and input_modello.value != "":
             # Validazione anno: fra 1886 e anno corrente (qui hardcoded 2025 nel codice originale)
             if int(input_anno.value) >1885 and int(input_anno.value) < 2025:
-                # Validazione posti: almeno 1
-                if int(txtOut.value) >0:
-                    # Aggiunge l'automobile tramite l'istanza Autonoleggio e ottiene l'oggetto creato
-                    auto=autonoleggio.aggiungi_automobile(input_marca.value, input_modello.value, input_anno.value, txtOut.value)
-                    codice=auto.codice
-                    if auto.disponibile == True:
-                        libera="Disponibile"
-                    else:
-                        libera="Noleggiata"
-                    # Aggiunge una riga descrittiva alla ListView
-                    lista_auto.controls.append(ft.Text(f"✅{codice} | {input_marca.value} {input_modello.value} ({input_anno.value}) | {txtOut.value} posti | {libera}"))
+                # Aggiunge l'automobile tramite l'istanza Autonoleggio e ottiene l'oggetto creato
+                auto=autonoleggio.aggiungi_automobile(input_marca.value, input_modello.value, input_anno.value, txtOut.value)
+                codice=auto.codice
+                if auto.disponibile == True:
+                    libera="Disponibile"
                 else:
-                    # Messaggio d'errore nella ListView per posti non validi
-                    lista_auto.controls.append(ft.Text("⛔ Inserire un numero di posti maggiore di 0, non esistono auto con meno di 1 posto posti."))
+                    libera="Noleggiata"
+                # Aggiunge una riga descrittiva alla ListView
+                lista_auto.controls.append(ft.Text(f"✅{codice} | {input_marca.value} {input_modello.value} ({input_anno.value}) | {txtOut.value} posti | {libera}"))
             else:
                 # Messaggio d'errore nella ListView per anno non valido
                 lista_auto.controls.append(
@@ -118,7 +114,7 @@ def main(page: ft.Page):
 
     # Bottoni per la gestione dell'inserimento di una nuova auto
     btnMinus = ft.IconButton(icon=ft.Icons.REMOVE,
-                             icon_color="green",
+                             icon_color="red",
                              icon_size=24, on_click=handleRemove)
     btnAdd = ft.IconButton(icon=ft.Icons.ADD,
                            icon_color="green",
